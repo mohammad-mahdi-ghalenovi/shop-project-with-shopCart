@@ -36,6 +36,7 @@ function createProducts(data) {
       );
     });
   } else {
+    titleCountElem.innerHTML = 0 + " items";
     cartItemsContainer.innerHTML = "";
   }
 }

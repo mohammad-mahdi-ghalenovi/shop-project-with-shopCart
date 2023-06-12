@@ -3,21 +3,20 @@ const productContainer = document.querySelector(".product-container");
 const successNotitfication = document.querySelector(".success-notif");
 let typedProduct;
 
-inputElem.addEventListener("keydown", (e) => {
-  let { key } = e;
-
+inputElem.addEventListener("keyup", (e) => {
   typedProduct = inputElem.value.toLowerCase();
 
-  if (key === "Enter") {
-    findProductBySearch(typedProduct);
-  }
+  findProductBySearch(typedProduct);
 });
 
 function findProductBySearch(product) {
   fetch(`https://dummyjson.com/products/search?q=${product}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.products[0]);
+      productContainer.innerHTML = "";
+      data.products.forEach((product) => {
+        createProducts(product);
+      });
     })
     .catch((err) => console.log(err));
 }
@@ -90,18 +89,14 @@ function showNotfi() {
   successNotitfication.style.display = "block";
 
   setTimeout(() => {
-
     successNotitfication.classList.add("notif-active");
 
     setTimeout(() => {
-
       successNotitfication.classList.remove("notif-active");
 
       setTimeout(() => {
-        
         successNotitfication.style.display = "none";
-
       }, 1000);
     }, 1000);
-  }, 1000);
+  }, 200);
 }
