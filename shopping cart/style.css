@@ -110,6 +110,9 @@ body {
 .cart__img {
   height: 80px;
   width: 80px;
+  background-position: center;
+  background-size: 95%;
+  background-repeat: no-repeat;
 }
 
 .cart-infos {

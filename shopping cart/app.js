@@ -1,44 +1,56 @@
-let cartItemsContainer = document.querySelector(".left__carts-container");
+const cartItemsContainer = document.querySelector(".left__carts-container");
+const titleCountElem = document.querySelector(".title__count");
 
-window.addEventListener("load", () => {
+function loadProducts() {
   fetch("https://shop-project1-d3570-default-rtdb.firebaseio.com/products.json")
     .then((res) => res.json())
     .then((data) => {
-      convertProducts(data);
+      createProducts(data);
     });
-});
+}
 
-function convertProducts(data) {
+function createProducts(data) {
   if (data) {
     data = Object.entries(data);
     cartItemsContainer.innerHTML = "";
-
+    titleCountElem.innerHTML = data.length + " items";
     data.forEach((product) => {
-      createProducts(product[1]);
+      cartItemsContainer.insertAdjacentHTML(
+        "beforeend",
+        `
+      <div class="cart-item">
+      <div class="cart-img">
+          <div style="background-image: url(${product[1].images[0]})" class="cart__img" /></div>
+      </div>
+      <div class="cart-infos">
+          <div class="info__category">${product[1].category}</div>
+          <div class="info__name">${product[1].title}</div>
+      </div>
+      <div class="cart-count">
+          <input type="number" value="1" min="1" class="count__input" />
+      </div>
+      <div class="cart-price">$${product[1].price}</div>
+      <button class="cart-close" onclick="deleteProduct('${product[0]}')">X</button>
+    </div>
+      `
+      );
     });
   } else {
-    console.log("Empty");
+    cartItemsContainer.innerHTML = "";
   }
 }
 
-function createProducts(product) {
-  cartItemsContainer.insertAdjacentHTML(
-    "beforeend",
-    `
-  <div class="cart-item">
-  <div class="cart-img">
-      <img src="${product.images[0]}" alt="" class="cart__img" />
-  </div>
-  <div class="cart-infos">
-      <div class="info__category">${product.category}</div>
-      <div class="info__name">${product.title}</div>
-  </div>
-  <div class="cart-count">
-      <input type="number" value="1" class="count__input" />
-  </div>
-  <div class="cart-price">$${product.price}</div>
-  <button class="cart-close">X</button>
-</div>
-  `
-  );
+function deleteProduct(productID) {
+  fetch(
+    `https://shop-project1-d3570-default-rtdb.firebaseio.com/products/${productID}.json`,
+    {
+      method: "DELETE",
+    }
+  ).then(() => {
+    loadProducts();
+  });
 }
+
+window.addEventListener("load", () => {
+  loadProducts();
+});
